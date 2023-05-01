@@ -9,18 +9,22 @@ public class Controller {
     public Controller(){
         Map<String, String> env = System.getenv();
         sendEmail = new SendEmail("lashkiba.st.lorenzo@maxplanck.edu.it","lorenzoboiko@gmail.com",env.get("password"));
-        newyorkTimesApi = new NewyorkTimesApi("");
+        newyorkTimesApi = new NewyorkTimesApi();
     }
 
-    public void sendDefaultEmail(){
-        newyorkTimesApi.getXmlFile();
-        sendEmail.send(newyorkTimesApi.readXml());
+    public void sendDefaultEmail(String theme){
+        if( newyorkTimesApi.getXmlFile(theme)) {
+            sendEmail.send(newyorkTimesApi.getContent());
+        }else{
+            System.out.println("Retry");
+        }
     }
-    public void sendToAll(){
+    public void sendCustomEmail(String email,String theme){
+        if(newyorkTimesApi.getXmlFile(theme)) {
+            sendEmail.send(newyorkTimesApi.getContent(), email);
+        }else{
+            System.out.println("Retry");
+        }
 
-    }
-    public void sendCustomEmail(String email){
-        newyorkTimesApi.getXmlFile();
-        sendEmail.send(newyorkTimesApi.readXml(),email);
     }
 }

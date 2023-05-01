@@ -1,6 +1,15 @@
 package org.example.sendEmail;
 
+import org.example.Main;
 import org.example.newYorkTimesApi.News;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.filter.Filters;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -41,6 +50,21 @@ public class SendEmail {
     }
 
     public String readHtmlFile(String path){
+        try {
+            Document doc = new SAXBuilder().build(Main.class.getResource("src/main/java/org/example/sendEmail/arts.xml"));
+            // XPath that finds the `p` element with id="first"
+            XPathExpression<Element> xpe = XPathFactory.instance().compile(
+                    "//p[@id='first']", Filters.element());
+            Element p = xpe.evaluateFirst(doc);
+
+            p.setText("This is my text");
+
+            XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+            xout.output(doc, System.out);
+        }catch(Exception e){
+            System.out.printf("ERROR: " +e);
+        }
+
         StringBuilder html = new StringBuilder();
         String result = "error";
         try {
@@ -74,7 +98,6 @@ public class SendEmail {
 
         try {
             // Create a default MimeMessage object
-            //System.out.println(content.toString());
             Message message = new MimeMessage(session);
 
             message.setFrom(new InternetAddress(from));
@@ -85,13 +108,13 @@ public class SendEmail {
             message.setSubject("Hi "+to.split("@")[0]);
               /* Constructing String Builder to
             append the string into the html */
-            String result = readHtmlFile("src/main/java/org/example/sendEmail/index.html");
-            message.setContent( result, "text/html; charset=utf-8");
+
+            message.setContent( content.getChannel().get(0).htmlString(), "text/html; charset=utf-8");
             // Send message
             Transport.send(message);
             System.out.println("Sent message successfully....");
 
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             System.err.println("ERROR: couldn't send the email { "+e+" }");
         }
     }

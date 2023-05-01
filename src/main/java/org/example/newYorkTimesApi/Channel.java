@@ -71,12 +71,29 @@ public class Channel
         this.item=item;
     }
 
-    public String toString()
+    public String htmlString()
     {
-        String ret="";
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html>\n");
+        sb.append("<head>\n");
+        sb.append("<title>").append(this.title).append("</title>\n");
+        sb.append("</head>\n");
+        sb.append("<body>\n");
+        sb.append("<div style=\"width:100%; height:auto; display:flex; justify-content:center; flex-direction:column;\" >\n");
+        sb.append("<a href=\"\"").append(this.getImage().get(0).getLink()).append("\"><img src=\"").append(this.getImage().get(0).getUrl()).append("\"></a>\n");
+        sb.append("</div>\n");
+        sb.append("<h2>").append(this.title).append("</h2>\n");
+        sb.append("<p>").append(this.pubDate).append("</p>\n");
+        for( Item it : this.item) {
+            sb.append("<h2>").append(it.getTitle()).append("</h2>\n");
+            sb.append("<p>").append(it.getDescription()).append("</p>\n");
+        }
+        sb.append("<br>");
 
-        ret+="Titolo: "+this.getTitle()+"\nLink: "+this.getLink()+"\nData di pubblicazione: "+this.getPubDate()+"\n\nIMAGE\n"+image.toString()+"\n\nITEM\n"+item.toString();
 
-        return ret;
+
+        sb.append("</body>\n");
+        sb.append("</html>\n");
+        return sb.toString();
     }
 }

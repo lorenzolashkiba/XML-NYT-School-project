@@ -8,14 +8,79 @@ public class Main {
     private static Controller controller;
     private static Scanner sc;
     private static int choice;
+    private static String argument(Scanner sc){
+        System.out.println("Choose the theme: Africa\n" +
+                "Americas\n" +
+                "ArtandDesign\n" +
+                "Arts\n" +
+                "AsiaPacific\n" +
+                "Automobiles\n" +
+                "Baseball\n" +
+                "Books\n" +
+                "Business\n" +
+                "Climate\n" +
+                "CollegeBasketball\n" +
+                "CollegeFootball\n" +
+                "Dance\n" +
+                "Dealbook\n" +
+                "DiningandWine\n" +
+                "Economy\n" +
+                "Education\n" +
+                "EnergyEnvironment\n" +
+                "Europe\n" +
+                "FashionandStyle\n" +
+                "Golf\n" +
+                "Health\n" +
+                "Hockey\n" +
+                "HomePage\n" +
+                "Jobs\n" +
+                "Lens\n" +
+                "MediaandAdvertising\n" +
+                "MiddleEast\n" +
+                "MostEmailed\n" +
+                "MostShared\n" +
+                "MostViewed\n" +
+                "Movies\n" +
+                "Music\n" +
+                "NYRegion\n" +
+                "Obituaries\n" +
+                "PersonalTech\n" +
+                "Politics\n" +
+                "ProBasketball\n" +
+                "ProFootball\n" +
+                "RealEstate\n" +
+                "Science\n" +
+                "SmallBusiness\n" +
+                "Soccer\n" +
+                "Space\n" +
+                "Sports\n" +
+                "SundayBookReview\n" +
+                "Sunday-Review\n" +
+                "Technology\n" +
+                "Television\n" +
+                "Tennis\n" +
+                "Theater\n" +
+                "TMagazine\n" +
+                "Travel\n" +
+                "Upshot\n" +
+                "US\n" +
+                "Weddings\n" +
+                "Well\n" +
+                "World\n" +
+                "YourMoney");
+        System.out.print("Choose one option :");
+
+        String theme =sc.nextLine();
+        return theme;
+    }
     public static void main(String[] args) {
         controller = new Controller();
         System.out.println("WELCOME BACK ADMIN");
-        do {
-
-        System.out.println("Menu: \n 1.Send direct email\n 2.Send to all emails\n 3.Exit program");
-        System.out.print("Choose one option :");
         sc=new Scanner(System.in);
+        do {
+        System.out.println("Menu: \n 1.Send direct email\n 2.Exit program");
+        System.out.print("Choose one option :");
+
         choice =sc.nextInt();
 
         switch (choice){
@@ -25,25 +90,26 @@ public class Main {
                 choice =sc.nextInt();
                 switch (choice){
                     case 1: {
-                        controller.sendDefaultEmail();
+                        sc.nextLine();
+                        String theme = argument(sc);
+                        controller.sendDefaultEmail(theme);
                         break;
                     }
                     case 2: {
                         System.out.print("Write the email :");
                         String email = sc.nextLine();
                         email = sc.nextLine();
-                        controller.sendCustomEmail(email);
+                        String theme = argument(sc);
+                        controller.sendCustomEmail(email,theme);
                         break;
                     }
 
                 }
             }
-            case 2: {
-                controller.sendToAll();
-                break;
-            }
         }
-        }while (choice!=3);
+        }while (choice!=2);
 
     }
+
+
 }

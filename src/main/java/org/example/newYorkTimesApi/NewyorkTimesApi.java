@@ -2,60 +2,49 @@ package org.example.newYorkTimesApi;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class NewyorkTimesApi {
     private URL url;
     private HttpURLConnection conn;
+    private News news;
+    public NewyorkTimesApi() {
 
-    public NewyorkTimesApi(String args) {
-        try {
-            url = new URL("https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml");
-        } catch (Exception e) {
-            System.err.printf("ERROR: " + e);
-        }
     }
 
-    public void getXmlFile() {
+    public Boolean getXmlFile(String theme) {
 
         try {
+            url = new URL("https://rss.nytimes.com/services/xml/rss/nyt/"+theme+".xml");
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "Arts/xml");
+            conn.setRequestProperty("Accept", theme+"/xml");
 
             BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
             String output;
-            FileOutputStream fos = new FileOutputStream("src/main/java/org/example/sendEmail/arts.xml");
-
+            String content = new String();
             while ((output = br.readLine()) != null) {
-                fos.write(output.getBytes());
-                fos.write("\n".getBytes());
+
+                content += output;
             }
 
             br.close();
             conn.disconnect();
+            JAXBContext context = JAXBContext.newInstance(News.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            news = (News) unmarshaller.unmarshal(new StringReader(content));
+            //System.out.println(news.toString());
+            return true;
         } catch (Exception e) {
-            System.err.printf("ERROR: " + e);
+            System.err.printf("ERROR:-" + e);
+            return false;
         }
     }
 
-    public News readXml() {
-        try{
-            JAXBContext context = JAXBContext.newInstance(News.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            News news = (News) unmarshaller.unmarshal(new File("src/main/java/org/example/sendEmail/arts.xml"));
-            System.out.println(news.toString());
-            return news;
-        }catch(Exception e) {
-            System.err.printf("ERROR: " + e);
-        }
-        return null;
-        }
-
+    public News getContent() {
+        return news;
+    }
 }
